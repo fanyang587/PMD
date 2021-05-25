@@ -281,8 +281,6 @@ class Pascal_BD(Dataset):
         self.normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
         self.image_A_names = self.data_info.source_image
         self.image_B_names = self.data_info.target_image
-        self.T2S_mask = self.data_info.T2S_mask
-        self.S2T_mask = self.data_info.S2T_mask
         self.flow_T2S = self.data_info.flow_T2S
         self.flow_S2T = self.data_info.flow_S2T
         self.classes = self.data_info.classes
@@ -416,8 +414,6 @@ class Pascal_BD(Dataset):
     def __getitem__(self, idx):
         image1, image1_size, image1_name = self.get_image(self.image_A_names, idx, self.flip)
         image2, image2_size, image2_name = self.get_image(self.image_B_names, idx, self.flip)
-        # mask_S2T = self.get_masks(self.S2T_mask, idx, self.flip)
-        # mask_T2S = self.get_masks(self.T2S_mask, idx, self.flip)
         image1_var = self.transform(image1)
         image2_var = self.transform(image2)
         image1 = image1_var.permute(1, 2, 0).numpy() * 255
