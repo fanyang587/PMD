@@ -245,49 +245,6 @@ class chn_attention(nn.Module):
         att = torch.sigmoid(self.mu_conv(att))
         return att
 
-class bayes_attention(nn.Module):
-    def __init__(self, in_chn, kernel_size):
-        super(bayes_attention, self).__init__()
-        self.gap = nn.AdaptiveAvgPool2d((1,1))
-        self.mu_conv = nn.Sequential(
-            nn.Conv2d(in_chn * 2, in_chn, kernel_size=1),
-            nn.BatchNorm2d(in_chn),
-            nn.ReLU()
-        )
-        self.sig_conv = nn.Sequential(
-            nn.Conv2d(in_chn*2, in_chn, kernel_size=kernel_size),
-            nn.BatchNorm2d(in_chn),
-            nn.ReLU()
-        )
-
-    def batch_diagonal(self, input):
-        # idea from here: https://discuss.pytorch.org/t/batch-of-diagonal-matrix/13560
-        # batches a stack of vectors (batch x N) -> a stack of diagonal matrices (batch x N x N)
-        # works in  2D -> 3D, should also work in higher dimensions
-        # make a zero matrix, which duplicates the last dim of input
-        dims = [input.size(i) for i in torch.arange(input.dim())]
-        dims.append(dims[-1])
-        output = torch.zeros(dims)
-        # stride across the first dimensions, add one to get the diagonal of the last dimension
-        strides = [output.stride(i) for i in torch.arange(input.dim() - 1)]
-        strides.append(output.size(-1) + 1)
-        # stride and copy the imput to the diagonal
-        output.as_strided(input.size(), strides).copy_(input)
-        return output.cuda()
-
-    def forward(self, feature):
-        mu_att = self.gap(feature)
-        mu_att = self.mu_conv(mu_att)
-        sig_att = self.sig_conv(feature)
-        mu_att = mu_att.squeeze()
-        sig_att = sig_att.squeeze()
-        sig_tril = torch.diag_embed(sig_att, offset=0, dim1=-2, dim2=-1)
-        sample_dist = torch.distributions.multivariate_normal.MultivariateNormal(mu_att,scale_tril=sig_tril)
-        sample_att = sample_dist.sample()
-        att = torch.sigmoid(sample_att)
-        att = att.unsqueeze(-1).unsqueeze(-1)
-        return att
-
 class PMDNet(nn.Module):
     def __init__(self, feature_H, feature_W, beta, kernel_sigma):
         super(PMDNet, self).__init__()
