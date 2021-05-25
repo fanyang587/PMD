@@ -10,17 +10,6 @@ import torch
 
 
 class RandomErasing(object):
-    '''
-    Class that performs Random Erasing in Random Erasing Data Augmentation by Zhong et al.
-    -------------------------------------------------------------------------------------
-    probability: The probability that the operation will be performed.
-    sl: min erasing area
-    sh: max erasing area
-    r1: min aspect ratio
-    mean: erasing value
-    -------------------------------------------------------------------------------------
-    '''
-
     def __init__(self, probability=0.3, sl=0.02, sh=0.4, r1=0.3, mean=[0.4914, 0.4822, 0.4465]):
         self.probability = probability
         self.mean = mean
