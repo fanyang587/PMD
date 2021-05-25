@@ -14,7 +14,7 @@ parser = argparse.ArgumentParser(description="SFNet evaluation")
 parser.add_argument('--num_workers', type=int, default=4, help='number of workers for data loader')
 parser.add_argument('--feature_h', type=int, default=20, help='height of feature volume')
 parser.add_argument('--feature_w', type=int, default=20, help='width of feature volume')
-parser.add_argument('--spair_path', type=str, default='../SFNet_org/codes/data/SPair/', help='directory of test data')
+parser.add_argument('--spair_path', type=str, default='data/SPair/', help='directory of test data')
 parser.add_argument('--beta', type=float, default=50, help='inverse temperature of softmax @ kernel soft argmax')
 parser.add_argument('--kernel_sigma', type=float, default=5,
                     help='standard deviation of Gaussian kerenl @ kernel soft argmax')
