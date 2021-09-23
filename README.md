@@ -27,9 +27,7 @@
 
 ![](image/res.png)
 
-4. Training:
-   + Training code will come soon.
-6. If you think this work is helpful, please cite
+4. If you think this work is helpful, please cite
 
 ```
 @inproceedings{zhai2021Mutual,
